@@ -1,3 +1,5 @@
+const Price = 5.90;
+
 new Vue({
     el: '#app',
     data: {
@@ -11,11 +13,11 @@ new Vue({
     },
     methods: {
         addItem: function (index) {
-            this.total += 5.55;
+            this.total += Price;
             var item = this.items[index];
             var found = false;
             for (i = 0; i < this.cart.length; i++) {
-                if (this.cart[i].id = item.id) {
+                if (this.cart[i].id === item.id) {
                     found = true;
                     this.cart[i].qty++;
                 };
@@ -23,8 +25,10 @@ new Vue({
             }
             if (!found) {
                 this.cart.push({
+                    id: item.id,
                     title: item.title,
-                    qty: 1
+                    qty: 1,
+                    price: Price
                 });
 
             }
