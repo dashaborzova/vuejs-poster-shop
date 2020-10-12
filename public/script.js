@@ -4,16 +4,29 @@ new Vue({
     el: '#app',
     data: {
         total: 0,
-        items: [
-        ],
+        items: [],
         cart: [],
-        search: '',
+        search: 'love',
+        searchResult: [],
+        lastSearch: '',
+        loading: false,
+        price: Price
     },
     methods: {
+        appendItems: function () {
+            if (this.items.length < this.searchResult.length) {
+                var append = this.searchResult.slice(this.items.length, this.items.length + 10);
+                this.items = this.items.concat(append);
+            };
+        },
         onSubmit: function () {
+            this.items = [];
+            this.loading = true;
             this.$http.get('/search/'.concat(this.search)).then(function (res) {
-                this.items = res.data;
-
+                this.searchResult = res.data;
+                this.lastSearch = this.search;
+                this.loading = false;
+                this.appendItems();
             });
         },
         addItem: function (index) {
@@ -60,6 +73,16 @@ new Vue({
         currency: function (price) {
             return '$'.concat(price.toFixed(2));
         }
+    },
+    mounted: function () {
+        this.onSubmit();
+        var vueInstance = this;
+        var elem = document.getElementById('product-list-bottom')
+        var watcher = scrollMonitor.create(elem);
+        watcher.enterViewport(function () {
+            vueInstance.appendItems();;
+        })
     }
 
 });
+
