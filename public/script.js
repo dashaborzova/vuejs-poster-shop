@@ -12,6 +12,11 @@ new Vue({
         loading: false,
         price: Price
     },
+    computed: {
+        noMoreItems: function () {
+            return this.items.length === this.searchResult.length & this.searchResult.length > 0
+        },
+    },
     methods: {
         appendItems: function () {
             if (this.items.length < this.searchResult.length) {
@@ -20,14 +25,17 @@ new Vue({
             };
         },
         onSubmit: function () {
-            this.items = [];
-            this.loading = true;
-            this.$http.get('/search/'.concat(this.search)).then(function (res) {
-                this.searchResult = res.data;
-                this.lastSearch = this.search;
-                this.loading = false;
-                this.appendItems();
-            });
+            if (this.search.length) {
+                this.items = [];
+                this.loading = true;
+                this.$http.get('/search/'.concat(this.search)).then(function (res) {
+                    this.searchResult = res.data;
+                    this.lastSearch = this.search;
+                    this.loading = false;
+                    this.appendItems();
+                });
+            };
+
         },
         addItem: function (index) {
             this.total += Price;
